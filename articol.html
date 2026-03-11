@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Aging & Mindset / Îmbătrânire și Mentalitate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --warm-white: #faf8f4;
+    --ink: #1a1714;
+    --muted: #6b6460;
+    --accent: #b85c38;
+    --accent-light: #e8c4b0;
+    --ro-bg: #f0ede6;
+    --divider: #d9d0c4;
+    --label-en: #b85c38;
+    --label-ro: #5a7a6b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--ink);
+    padding: 28px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 12px,
+      rgba(255,255,255,0.015) 12px,
+      rgba(255,255,255,0.015) 13px
+    );
+  }
+
+  .header-label {
+    font-family: 'Source Serif 4', serif;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 7vw, 32px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.25;
+    position: relative;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .header-subtitle {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(245, 240, 232, 0.6);
+    font-style: italic;
+    position: relative;
+  }
+
+  /* Source tag */
+  .source-bar {
+    background: var(--accent);
+    padding: 9px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .source-bar span {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    font-family: 'Source Serif 4', serif;
+    font-weight: 300;
+  }
+
+  .source-bar .dot { opacity: 0.5; }
+
+  /* Language toggle */
+  .lang-toggle {
+    display: flex;
+    margin: 20px 20px 0;
+    background: var(--warm-white);
+    border-radius: 30px;
+    padding: 3px;
+    border: 1px solid var(--divider);
+    position: sticky;
+    top: 10px;
+    z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .lang-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 27px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .lang-btn.active {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  .lang-btn .flag { margin-right: 5px; }
+
+  /* Article body */
+  .article {
+    padding: 24px 20px 60px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Paragraph block — each paragraph is a "card" containing EN + RO */
+  .para-block {
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .para-en, .para-ro {
+    padding: 16px 18px;
+    border-radius: 10px;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+  }
+
+  .para-en {
+    background: var(--warm-white);
+    border-left: 3px solid var(--label-en);
+  }
+
+  .para-ro {
+    background: var(--ro-bg);
+    border-left: 3px solid var(--label-ro);
+    margin-top: 6px;
+    font-style: italic;
+    font-size: 15.5px;
+    color: #2e3b35;
+  }
+
+  /* Mode: show only one language */
+  body.show-en .para-ro { display: none; }
+  body.show-ro .para-en { display: none; }
+
+  /* Language micro-labels */
+  .lang-tag {
+    font-size: 9.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-style: normal;
+    font-weight: 400;
+    margin-bottom: 6px;
+    display: block;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  .para-en .lang-tag { color: var(--label-en); }
+  .para-ro .lang-tag { color: var(--label-ro); }
+
+  /* Quote paragraph styling */
+  .para-en.is-quote, .para-ro.is-quote {
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .para-en.is-quote::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    color: var(--accent-light);
+    position: absolute;
+    top: -6px;
+    left: 12px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .para-ro.is-quote::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    color: #b8ccbf;
+    position: absolute;
+    top: -6px;
+    left: 12px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .para-en.is-quote p, .para-ro.is-quote p {
+    padding-left: 26px;
+    font-style: italic;
+  }
+
+  /* Stat highlight */
+  .stat-highlight {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 20px 20px;
+    margin: 28px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .stat-highlight .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--accent-light);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 72px;
+  }
+
+  .stat-highlight .stat-desc {
+    font-size: 14px;
+    color: rgba(245, 240, 232, 0.8);
+    line-height: 1.55;
+    padding-top: 6px;
+  }
+
+  /* Inline read more */
+  .read-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-light);
+    padding-bottom: 1px;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--ink);
+    padding: 28px 20px;
+    text-align: center;
+  }
+
+  .footer p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--cream);
+    line-height: 1.5;
+  }
+
+  .footer .footer-small {
+    margin-top: 12px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-style: normal;
+  }
+
+  .footer .footer-original {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: rgba(245, 240, 232, 0.5);
+    line-height: 1.7;
+  }
+
+  .footer .footer-original a {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--accent-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(232, 196, 176, 0.4);
+    padding-bottom: 1px;
+    font-style: normal;
+    letter-spacing: 0.3px;
+  }
+
+  /* Separator line */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: 4px 0 28px;
+  }
+</style>
+</head>
+<body class="show-both">
+
+<div class="header">
+  <div class="header-label">Science &amp; Aging · Știință &amp; Îmbătrânire</div>
+  <h1>Aging Well Is a Matter of <em>Mindset</em></h1>
+  <div class="header-subtitle">Îmbătrânirea bine este o chestiune de mentalitate</div>
+</div>
+
+<div class="source-bar">
+  <span>Geriatrics Journal</span>
+  <span class="dot">·</span>
+  <span>Yale University Research</span>
+  <span class="dot">·</span>
+  <span>11,000+ participants</span>
+</div>
+
+<div class="lang-toggle" id="langToggle">
+  <button class="lang-btn" id="btnBoth" onclick="setLang('both')">🌐 Both / Ambele</button>
+  <button class="lang-btn active" id="btnEn" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</button>
+  <button class="lang-btn" id="btnRo" onclick="setLang('ro')"><span class="flag">🇷🇴</span> Română</button>
+</div>
+
+<div class="article">
+
+  <!-- Paragraph 1 -->
+  <div class="para-block">
+    <div class="para-en">
+      <span class="lang-tag">English</span>
+      <p>Getting older comes with the inevitable deterioration of our minds and bodies, right? Not according to newly published research in <em>Geriatrics</em> that's challenging traditional assumptions about the aging process. Instead, we're capable of showing some improvements throughout our twilight years — all it takes is the right mindset.</p>
+    </div>
+    <div class="para-ro">
+      <span class="lang-tag">Română</span>
+      <p>Pe măsură ce îmbătrânim, mintea și corpul nostru se deteriorează inevitabil, nu-i așa? Nu potrivit unor cercetări recent publicate în revista <em>Geriatrics</em>, care pun sub semnul întrebării presupunerile tradiționale despre procesul de îmbătrânire. În schimb, suntem capabili să înregistrăm unele îmbunătățiri chiar și în anii târzii ai vieții — tot ce este necesar este mentalitatea potrivită.</p>
+    </div>
+  </div>
+
+  <!-- Stats highlight -->
+  <div class="stat-highlight">
+    <div class="stat-num">45%</div>
+    <div class="stat-desc">of participants improved in at least one area — cognition or physical function — over a 12-year follow-up period.<br><br><em>dintre participanți s-au îmbunătățit în cel puțin un domeniu — cognitiv sau fizic — pe parcursul a 12 ani.</em></div>
+  </div>
+
+  <!-- Paragraph 2 -->
+  <div class="para-block">
+    <div class="para-en">
+      <span class="lang-tag">English</span>
+      <p>Researchers led by Becca R. Levy of Yale University followed more than 11,000 participants in the longitudinal Health and Retirement Study. They tracked cognitive function using a global performance assessment, and physical function using walking speed. They found that 32% improved cognitively and 28% improved physically.</p>
+    </div>
+    <div class="para-ro">
+      <span class="lang-tag">Română</span>
+      <p>Cercetători conduși de Becca R. Levy de la Yale University au urmărit peste 11.000 de participanți. Echipa a urmărit funcția cognitivă și funcția fizică (viteza de mers). Au descoperit că 32% s-au îmbunătățit cognitiv, iar 28% fizic.</p>
+    </div>
+  </div>
+
+  <!-- Quote 1 -->
+  <div class="para-block">
+    <div class="para-en is-quote">
+      <span class="lang-tag">English · Levy</span>
+      <p>"What's striking is that these gains disappear when you only look at averages. If you average everyone together, you see decline. But when you look at individual trajectories, you uncover a very different story. A meaningful percentage of the older participants that we studied got better."</p>
+    </div>
+    <div class="para-ro is-quote">
+      <span class="lang-tag">Română · Levy</span>
+      <p>„Ceea ce este surprinzător este că aceste câștiguri dispar atunci când privești doar mediile. Dacă faci media tuturor, vezi un declin. Dar când te uiți la traiectoriile individuale, descoperi o poveste foarte diferită. Un procent semnificativ dintre participanți chiar s-au îmbunătățit."</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Paragraph 3 -->
+  <div class="para-block">
+    <div class="para-en">
+      <span class="lang-tag">English</span>
+      <p>According to the researchers, part of the difference was all in their heads. Participants who possessed more positive age beliefs were significantly more likely to see their cognition and physical condition improve.</p>
+    </div>
+    <div class="para-ro">
+      <span class="lang-tag">Română</span>
+      <p>Potrivit cercetătorilor, o parte din diferență ținea de mentalitatea lor. Participanții care aveau credințe mai pozitive despre îmbătrânire aveau șanse semnificativ mai mari să observe îmbunătățiri ale cogniției și condiției fizice.</p>
+    </div>
+  </div>
+
+  <!-- Paragraph 4 — earlier research -->
+  <div class="para-block">
+    <div class="para-en">
+      <span class="lang-tag">English</span>
+      <p>This builds upon Levy's earlier research, which found that having a negative attitude toward aging predicted poorer memory, slower walking speed, higher cardiovascular risk, and biomarkers associated with Alzheimer's disease.</p>
+    </div>
+    <div class="para-ro">
+      <span class="lang-tag">Română</span>
+      <p>Aceasta se bazează pe cercetările anterioare ale lui Levy, care au arătat că o atitudine negativă față de îmbătrânire prezice memorie mai slabă, viteză de mers mai mică, risc cardiovascular mai mare și biomarkeri asociați cu Alzheimer.</p>
+    </div>
+  </div>
+
+  <!-- Quote 2 -->
+  <div class="para-block">
+    <div class="para-en is-quote">
+      <span class="lang-tag">English · Levy</span>
+      <p>"Our findings suggest there is often a reserve capacity for improvement in later life. And because age beliefs are modifiable, this opens the door to interventions at both the individual and societal level."</p>
+    </div>
+    <div class="para-ro is-quote">
+      <span class="lang-tag">Română · Levy</span>
+      <p>„Rezultatele noastre sugerează că adesea există o capacitate de rezervă pentru îmbunătățire în etapele târzii ale vieții. Și pentru că credințele despre vârstă pot fi modificate, acest lucru deschide ușa intervențiilor la nivel individual și societal."</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Paragraph 5 -->
+  <div class="para-block">
+    <div class="para-en">
+      <span class="lang-tag">English</span>
+      <p>Negative stereotypes about aging, pervasive throughout the media and advertising, seep into our consciousness and can lead to biological consequences. There's a raft of research on the power of positive thinking linked to better health outcomes for cancer, heart disease, stroke, and injury recovery. A sunnier outlook could help soften the adverse effects of aging, as well.</p>
+    </div>
+    <div class="para-ro">
+      <span class="lang-tag">Română</span>
+      <p>Stereotipurile negative despre îmbătrânire, omniprezente în mass-media și publicitate, se infiltrează în conștiința noastră și pot avea consecințe biologice. Există numeroase cercetări despre puterea gândirii pozitive asociate cu rezultate mai bune pentru cancer, boli de inimă, accident vascular cerebral și recuperare. O perspectivă mai optimistă ar putea atenua și efectele negative ale îmbătrânirii.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>"It certainly can't hurt to try."</p>
+  <p style="margin-top:8px; font-size:15px; color: rgba(245,240,232,0.65);">„Cu siguranță nu strică să încerci."</p>
+  <div class="footer-small">Geriatrics · Yale University · Becca R. Levy</div>
+  <div class="footer-original">
+    This is a bilingual (English · Română) version of the original article.<br>
+    <em>Aceasta este o versiune bilingvă a articolului original.</em><br><br>
+    <a href="https://nautil.us/you-can-still-improve-as-you-age-with-the-right-mindset-1278841" target="_blank" rel="noopener">Read the original on Nautilus →</a><br>
+    <a href="https://nautil.us/you-can-still-improve-as-you-age-with-the-right-mindset-1278841" target="_blank" rel="noopener">Citiți originalul pe Nautilus →</a>
+  </div>
+</div>
+
+<script>
+  function setLang(lang) {
+    document.body.className = 'show-' + lang;
+    document.getElementById('btnBoth').classList.toggle('active', lang === 'both');
+    document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+    document.getElementById('btnRo').classList.toggle('active', lang === 'ro');
+  }
+
+  // Default to bilingual
+  setLang('both');
+</script>
+</body>
+</html>
